@@ -1,9 +1,12 @@
 package com.example.yehia67.weatherapp;
 
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.*;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,13 +15,29 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 
 public class MainActivity extends AppCompatActivity {
 TextView textView;
 EditText editText;
+    public void getWeather(View view){
+        try {
+
+            String cityname = editText.getText().toString();
+            String encode = URLEncoder.encode(cityname, "UTF-8");
+            DownloadTask downloadTask = new DownloadTask();
+            downloadTask.execute("api.openweathermap.org/data/2.5/weather?q="+encode);
+
+        }catch (UnsupportedEncodingException e)
+        {
+            Toast.makeText(getApplicationContext(),"Can't encode the city name",Toast.LENGTH_LONG);
+        }
+
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +46,7 @@ EditText editText;
         editText = (EditText) findViewById(R.id.et_search);
 
     }
+
     public class DownloadTask extends AsyncTask<String,Void,String>{
 
         @Override
